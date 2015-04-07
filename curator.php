@@ -527,7 +527,7 @@ class CuratorField extends BaseField {
             $data[] = array(
                 'uri'      => (string) $page->uri(),
                 'template' => (string) $page->intendedTemplate(),
-                'title'    => (string) $page->title()->html(),
+                'title'    => html_entity_decode($page->title()->html()),
                 'texts'    => implode(' ', array(
                     $page->description(),
                     $page->caption(),
