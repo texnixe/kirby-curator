@@ -43,6 +43,11 @@ class CuratorField extends BaseField {
     public $sort = 'default';
 
     /**
+     * Tags fields
+     */
+    public $tagfields = array('tags');
+
+    /**
      * Flip sort order
      *
      * @var string
@@ -128,6 +133,10 @@ class CuratorField extends BaseField {
             case 'flip':
                 if(!is_bool($value))
                     $this->flip = false;
+                break;
+            case 'tagfields':
+                if(!is_array($value) or empty($value))
+                    $this->tagfields = array('tags');
                 break;
         }
     }
@@ -524,6 +533,13 @@ class CuratorField extends BaseField {
                                         ))->url();
             }
 
+            $tags = array();
+            foreach($this->tagfields as $tagField)
+            {
+                $tags = array_merge($tags, str::split($page->$tagField()));
+            }
+            $tags = implode(',', array_unique($tags));
+
             $data[] = array(
                 'uri'      => (string) $page->uri(),
                 'template' => (string) $page->intendedTemplate(),
@@ -533,10 +549,7 @@ class CuratorField extends BaseField {
                     $page->caption(),
                     $page->text(),
                 )),
-                'tags'     => implode(',', array(
-                    $page->tags(),
-                    $page->type(),
-                )),
+                'tags'     => $tags,
                 'date'     => (string) $page->date('Y-m-d'),
                 'links'    => array(
                     'edit'    => purl($page, 'show'),
